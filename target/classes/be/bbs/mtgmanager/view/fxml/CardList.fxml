@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="CardAnchorPane" fx:id="cardPane"
+	minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
+	prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="be.bbs.mtgmanager.control.controller.CardController">
+	<children>
+		<JFXTreeTableView fx:id="cardWiewList"
+			layoutX="271.0" layoutY="15.0" prefHeight="570.0" prefWidth="615.0"
+			AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0"
+			AnchorPane.topAnchor="5.0" />
+		<Label fx:id="cardListLabel" layoutX="14.0" layoutY="15.0"
+			prefHeight="21.0" prefWidth="237.0" text="Label"
+			AnchorPane.bottomAnchor="15.0" />
+		<JFXTextField fx:id="idField" editable="true"
+			layoutX="159.0" layoutY="34.0" prefHeight="31.0" prefWidth="96.0" />
+		<JFXButton fx:id="findByIdButton" layoutX="17.0"
+			layoutY="35.0" onAction="#execFindById" prefHeight="31.0"
+			prefWidth="96.0" text="FindById" />
+		<JFXTextField fx:id="fieldFieldField" layoutX="17.0"
+			layoutY="131.0" prefHeight="31.0" prefWidth="110.0" />
+		<JFXTextField fx:id="fieldFieldValue" layoutX="134.0"
+			layoutY="131.0" prefHeight="31.0" prefWidth="126.0" />
+		<JFXButton fx:id="findByFieldButton" layoutX="79.0"
+			layoutY="199.0" text="FindByField" 
+			onAction="#execFindBy"/>
+	</children>
+	<padding>
+		<Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+	</padding>
+</AnchorPane>

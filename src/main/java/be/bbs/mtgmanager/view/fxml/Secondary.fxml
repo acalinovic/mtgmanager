@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" fx:id="rootpane" maxHeight="200.0" maxWidth="300.0" opacity="0.49" prefHeight="200.0" prefWidth="300.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bbsfx.view.fxml.SecondaryController">
+    <stylesheets>
+        <URL value="@/bbsfx/view/style/secondary.css" />
+    </stylesheets>
+</AnchorPane>

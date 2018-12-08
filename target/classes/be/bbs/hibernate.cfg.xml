@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                                         "http://hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+ <session-factory >
+  <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+  <property name="hibernate.connection.url">jdbc:mysql://192.168.0.90:3306/mtgmanagerv2</property>
+  <property name="hibernate.connection.username">boris</property>
+  <property name="hibernate.connection.password">albkeelboz</property>
+  <property name="hibernate.current_session_context_class">thread</property>
+  <property name="hibernate.show_sql">true</property>
+  <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+  <property name="hibernate.default_schema">mtgmanagerv2</property>
+  <property name="hibernate.globally_quoted_identifiers">true</property>
+  <mapping class="be.bbs.mtgmanager.entity.Artist"/>
+  <mapping class="be.bbs.mtgmanager.entity.BorderColor"/>
+  <mapping class="be.bbs.mtgmanager.entity.Color"/>
+  <mapping class="be.bbs.mtgmanager.entity.Card"/>
+  <mapping class="be.bbs.mtgmanager.entity.ForeignData"/>
+  <mapping class="be.bbs.mtgmanager.entity.FrameVersion"/>
+  <mapping class="be.bbs.mtgmanager.entity.Language"/>
+  <mapping class="be.bbs.mtgmanager.entity.Layout"/>
+  <mapping class="be.bbs.mtgmanager.entity.Legality"/>
+  <mapping class="be.bbs.mtgmanager.entity.Rarity"/>
+  <mapping class="be.bbs.mtgmanager.entity.Ruling"/>
+  <mapping class="be.bbs.mtgmanager.entity.Set"/>
+  <mapping class="be.bbs.mtgmanager.entity.SetType"/>
+  <mapping class="be.bbs.mtgmanager.entity.Token"/>
+  <mapping class="be.bbs.mtgmanager.entity.Type"/>
+ </session-factory>
+</hibernate-configuration>
