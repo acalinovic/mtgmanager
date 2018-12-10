@@ -12,8 +12,8 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableView;
 
 import be.bbs.bbsfx.control.GenericController;
-import be.bbs.bbsfx.orm.DatabaseHelper;
-import be.bbs.mtgmanager.entity.Card;
+import be.bbs.bbsfx.utils.DatabaseHelper;
+import be.bbs.mtgmanager.model.entity.Card;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -44,14 +44,14 @@ public class CardController extends GenericController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<be.bbs.mtgmanager.entity.Card> findAll() {
+	public List<be.bbs.mtgmanager.model.entity.Card> findAll() {
 		Query<Card> query = DatabaseHelper.SESSION_FACTORY.openSession().createQuery("from Card");
         List<Card> list = query.getResultList();
         System.out.println("Number of Cards present--> "+list.size());
         for (Card card : list) {
            
             System.out.println(card.getId());
-            System.out.println(card.getName());
+            System.out.println(card.getCardName());
         }
         DatabaseHelper.SESSION_FACTORY.getCurrentSession().close();
         return list;
@@ -62,7 +62,7 @@ public class CardController extends GenericController {
 	public Card findById(int id) {
 		Query<Card> query = DatabaseHelper.SESSION_FACTORY.openSession().createQuery("from Card c where c.id = :id").setParameter("id", id);
         Card card = query.getSingleResult();
-        System.out.println("card " + id + ": " + card.getName());
+        System.out.println("card " + id + ": " + card.getCardName());
        
         DatabaseHelper.SESSION_FACTORY.getCurrentSession().close();
         return card;
@@ -72,10 +72,10 @@ public class CardController extends GenericController {
 		String hql = "from Card c where c." + field + " =:" + field;
 		Query<Card> query = DatabaseHelper.SESSION_FACTORY.openSession().createQuery(hql).setParameter(field, value);
         Card card = query.getSingleResult();
-        System.out.println("card " + field + ": " + card.getName());
+        System.out.println("card " + field + ": " + card.getCardName());
        
         DatabaseHelper.SESSION_FACTORY.getCurrentSession().close();
-        cardListLabel.setText(card.getName());
+        cardListLabel.setText(card.getCardName());
         return card;
 	}
 	public void execFindById() {
@@ -83,7 +83,7 @@ public class CardController extends GenericController {
 		
 		try {
 			Card card = findById(i);			
-			cardListLabel.setText(card.getName());			
+			cardListLabel.setText(card.getCardName());			
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 			cardListLabel.setText("Nothing found");
@@ -101,7 +101,7 @@ public class CardController extends GenericController {
 
 		try {
 			Card card = findBy(field,value);
-			cardListLabel.setText(card.getName());			
+			cardListLabel.setText(card.getCardName());			
 		} catch(Exception e) {
 			cardListLabel.setText("Nothing found");						
 		}

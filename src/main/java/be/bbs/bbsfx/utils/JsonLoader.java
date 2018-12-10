@@ -3,8 +3,6 @@ package be.bbs.bbsfx.utils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import be.bbs.bbsfx.orm.DatabaseHelper;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package be.bbs.bbsfx.orm;
+package be.bbs.bbsfx.utils;
 
-import be.bbs.bbsfx.utils.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 

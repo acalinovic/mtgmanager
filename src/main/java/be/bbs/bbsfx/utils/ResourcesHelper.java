@@ -16,7 +16,7 @@ public class ResourcesHelper {
     public static String VIEW_DIRECTORY;
     
     public ResourcesHelper() {
-        VIEW_DIRECTORY = "/be/bbs/bbsfx/view/fxml/";
+        VIEW_DIRECTORY = "/be/bbs/mtgmanager/view/fxml/";
     }
     
     public void setViewDirectory(String path) {

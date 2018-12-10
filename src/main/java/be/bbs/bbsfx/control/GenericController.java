@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import be.bbs.bbsfx.orm.DatabaseHelper;
+import be.bbs.bbsfx.utils.DatabaseHelper;
 import be.bbs.bbsfx.utils.StageHelper;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

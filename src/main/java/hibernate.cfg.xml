@@ -1,23 +1,33 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                                         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
-    <session-factory>
-    <!--
-        <mapping resource="be/bbs/mtgmanager/model/entity/Bordercolor.hbm.xml"/>
-        <mapping resource="be/bbs/mtgmanager/model/entity/Legality.hbm.xml"/>
-        <mapping resource="be/bbs/mtgmanager/model/entity/Settype.hbm.xml"/>
-        <mapping resource="be/bbs/mtgmanager/model/entity/Expansion.hbm.xml"/>
-        <mapping resource="be/bbs/mtgmanager/model/entity/Token.hbm.xml"/>
-        <mapping resource="be/bbs/mtgmanager/model/entity/Card.hbm.xml"/>
-        <mapping resource="be/bbs/mtgmanager/model/entity/Color.hbm.xml"/>
-        <mapping resource="be/bbs/mtgmanager/model/entity/Type.hbm.xml"/>
-        <mapping resource="be/bbs/mtgmanager/model/entity/Language.hbm.xml"/>
-        <mapping resource="be/bbs/mtgmanager/model/entity/Rarity.hbm.xml"/>
-        <mapping resource="be/bbs/mtgmanager/model/entity/Foreigndata.hbm.xml"/>
-        <mapping resource="be/bbs/mtgmanager/model/entity/Ruling.hbm.xml"/>
-        <mapping resource="be/bbs/mtgmanager/model/entity/Artist.hbm.xml"/>
-        <mapping resource="be/bbs/mtgmanager/model/entity/Layout.hbm.xml"/>
-        <mapping resource="be/bbs/mtgmanager/model/entity/Frameversion.hbm.xml"/>
-	-->
-    </session-factory>
+ <session-factory>
+  <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+  <property name="hibernate.show_sql">true</property>
+  <property name="hibernate.use_sql_comments">true</property>
+  <property name="hibernate.format_sql">true</property>
+  <property name="hibernate.default_schema">mtgmanagerv2</property>
+  <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+  <property name="hibernate.connection.url">jdbc:postgresql://192.168.0.90:5432/mtgmanagerv2</property>
+  <property name="hibernate.connection.username">postgres</property>
+  <property name="hibernate.connection.password">albkeelboz</property>
+  
+  <mapping class="be.bbs.mtgmanager.model.entity.Artist"/>
+  <mapping class="be.bbs.mtgmanager.model.entity.BorderColor"/>
+  <mapping class="be.bbs.mtgmanager.model.entity.Card"/>
+  <mapping class="be.bbs.mtgmanager.model.entity.Color"/>
+  <mapping class="be.bbs.mtgmanager.model.entity.Expansion"/>
+  <mapping class="be.bbs.mtgmanager.model.entity.ForeignData"/>
+  <mapping class="be.bbs.mtgmanager.model.entity.FrameVersion"/>
+  <mapping class="be.bbs.mtgmanager.model.entity.Language"/>
+  <mapping class="be.bbs.mtgmanager.model.entity.Layout"/>
+  <mapping class="be.bbs.mtgmanager.model.entity.Legality"/>
+  <mapping class="be.bbs.mtgmanager.model.entity.Rarity"/>
+  <mapping class="be.bbs.mtgmanager.model.entity.Ruling"/>
+  <mapping class="be.bbs.mtgmanager.model.entity.ExpansionType"/>
+  <mapping class="be.bbs.mtgmanager.model.entity.Token"/>
+  <mapping class="be.bbs.mtgmanager.model.entity.Type"/>
+  
+ </session-factory>
 </hibernate-configuration>

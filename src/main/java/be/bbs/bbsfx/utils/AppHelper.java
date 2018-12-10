@@ -5,8 +5,6 @@
  */
 package be.bbs.bbsfx.utils;
 
-import be.bbs.bbsfx.orm.DatabaseHelper;
-
 /**
  *
  * @author boris

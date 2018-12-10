@@ -50,11 +50,15 @@ public class StageHelper {
         Stage chosenStage = this.getStage(stage.getTitle());
         chosenStage.setScene(new Scene(view));
     }
-    public void renderView(String stage, String view) throws IOException {
-        Parent targetView = (Parent) FXMLLoader.load(RESOURCES_MANAGER.getFxmlView(view));
+    public void renderView(String stage, String view, boolean show) throws IOException {
+        Parent targetView = FXMLLoader.load(RESOURCES_MANAGER.getFxmlView(view));
         Stage targetStage = getStage(stage);
         setView(targetStage, targetView);
         targetStage.setTitle(view);
+        if (show) {
+        	targetStage.show();
+        }
+
     }
     public void renderDefaultView(Stage defaultStage) throws IOException {
         defaultStage.setTitle("Default");
