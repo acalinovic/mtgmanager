@@ -5,7 +5,7 @@
  */
 package be.bbs.mtgmanager.control.controller;
 
-import be.bbs.bbsfx.control.exceptions.GenericController;
+import be.bbs.bbsfx.control.GenericController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package be.bbs.bbsfx.control.exceptions;
+package be.bbs.bbsfx.control;
 
 import java.net.URL;
 import java.util.Iterator;

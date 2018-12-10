@@ -11,7 +11,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableView;
 
-import be.bbs.bbsfx.control.exceptions.GenericController;
+import be.bbs.bbsfx.control.GenericController;
 import be.bbs.bbsfx.orm.DatabaseHelper;
 import be.bbs.mtgmanager.entity.Card;
 import javafx.fxml.FXML;

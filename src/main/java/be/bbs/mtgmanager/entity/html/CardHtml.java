@@ -3,7 +3,6 @@ package be.bbs.mtgmanager.entity.html;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Node;
 
-import be.bbs.mtgmanager.entity.Card;
 
 public class CardHtml {
 
@@ -43,7 +42,6 @@ public class CardHtml {
 		this.imageNode = imageNode;
 	}
 	public void translate() {
-		Card card = new Card();
 	}
 
 }

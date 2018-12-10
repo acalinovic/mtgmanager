@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+    <!--
+        <mapping resource="be/bbs/mtgmanager/model/entity/Bordercolor.hbm.xml"/>
+        <mapping resource="be/bbs/mtgmanager/model/entity/Legality.hbm.xml"/>
+        <mapping resource="be/bbs/mtgmanager/model/entity/Settype.hbm.xml"/>
+        <mapping resource="be/bbs/mtgmanager/model/entity/Expansion.hbm.xml"/>
+        <mapping resource="be/bbs/mtgmanager/model/entity/Token.hbm.xml"/>
+        <mapping resource="be/bbs/mtgmanager/model/entity/Card.hbm.xml"/>
+        <mapping resource="be/bbs/mtgmanager/model/entity/Color.hbm.xml"/>
+        <mapping resource="be/bbs/mtgmanager/model/entity/Type.hbm.xml"/>
+        <mapping resource="be/bbs/mtgmanager/model/entity/Language.hbm.xml"/>
+        <mapping resource="be/bbs/mtgmanager/model/entity/Rarity.hbm.xml"/>
+        <mapping resource="be/bbs/mtgmanager/model/entity/Foreigndata.hbm.xml"/>
+        <mapping resource="be/bbs/mtgmanager/model/entity/Ruling.hbm.xml"/>
+        <mapping resource="be/bbs/mtgmanager/model/entity/Artist.hbm.xml"/>
+        <mapping resource="be/bbs/mtgmanager/model/entity/Layout.hbm.xml"/>
+        <mapping resource="be/bbs/mtgmanager/model/entity/Frameversion.hbm.xml"/>
+	-->
+    </session-factory>
+</hibernate-configuration>

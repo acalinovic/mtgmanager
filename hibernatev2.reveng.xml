@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.org/dtd/hibernate-reverse-engineering-3.0.dtd" >
+
+<hibernate-reverse-engineering>
+  <table-filter match-schema="mtgmanagerv2" match-name=".*"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="artist"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="bordercolor"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="card"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="card_has_color"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="card_has_legality"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="card_has_printing"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="card_has_subtype"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="card_has_supertype"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="card_has_type"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="card_has_variation"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="color"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="expansion"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="foreigndata"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="frameversion"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="language"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="layout"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="legality"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="rarity"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="ruling"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="settype"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="token"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="token_has_color"/>
+  <table-filter match-schema="mtgmanagerv2" match-name="type"/>
+</hibernate-reverse-engineering>
