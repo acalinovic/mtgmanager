@@ -20,6 +20,8 @@ import be.bbs.mtgmanager.repositoy.GenericRepositoryImpl;
 
 public class JsonLoader {
 	
+	private static BigInteger multiverseIdTemp;
+
 	private static GenericRepositoryImpl<Artist> artistRepo;
 	private static GenericRepositoryImpl<BorderColor> borderColorRepo;;
 	private static GenericRepositoryImpl<Color> colorRepo;
@@ -40,8 +42,16 @@ public class JsonLoader {
 	private static File jsonFile;
 	private static byte[] jsonData;
 	private static ObjectMapper mapper;
-	
+
+	public static JsonNode init() throws IOException {
+
+		return expansions;
+	}
+
 	public static void load() throws IOException {
+		
+		multiverseIdTemp = new BigInteger("90000000");
+		
 		artistRepo = new GenericRepositoryImpl<Artist>();
 		borderColorRepo = new GenericRepositoryImpl<BorderColor>();
 		colorRepo = new GenericRepositoryImpl<Color>();
@@ -57,25 +67,29 @@ public class JsonLoader {
 		rulinRepo = new GenericRepositoryImpl<Ruling>();
 		tokenRepo = new GenericRepositoryImpl<Token>();
 		typeRepo = new GenericRepositoryImpl<Type>();
-		
+
 		jsonFile = new File("C:\\Users\\boris\\Desktop\\AllSets.json");
 		jsonData = Files.readAllBytes(jsonFile.toPath());
-		
+
 		mapper = new ObjectMapper();
 		expansions = mapper.readTree(jsonData);
 		
-		while (expansions.elements().hasNext()) {
-			JsonNode expansion = expansions.elements().next();
+		Iterator<JsonNode> expansionIterator = expansions.elements();
+
+
+		while (expansionIterator.hasNext()) {
+			JsonNode expansion = expansionIterator.next();
 			Expansion expansionEntity = new Expansion();
-			
-			ExpansionType existingExpansionTypeEntity = expansionTypeRepo.findOneBy(ExpansionType.class, "expansionType_name", expansion.get("type").asText());
+
+			ExpansionType existingExpansionTypeEntity = expansionTypeRepo.findOneBy(ExpansionType.class,
+					"expansionType_name", expansion.get("type").asText());
 			if (existingExpansionTypeEntity == null) {
 				ExpansionType expansionTypeEntity = new ExpansionType();
 				expansionTypeEntity.setExpansiontypeName(expansion.get("type").asText());
-				expansionTypeEntity.setExpansiontypeLabel(expansion.get("type").asText().substring(0, 1).toUpperCase() + expansion.get("type").asText().substring(1).replaceAll("_", " "));
+				expansionTypeEntity.setExpansiontypeLabel(expansion.get("type").asText().substring(0, 1).toUpperCase()
+						+ expansion.get("type").asText().substring(1).replaceAll("_", " "));
 				expansionTypeRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, expansionTypeEntity);
 				expansionEntity.setExpansionType(expansionTypeEntity);
-				System.out.println("SAVED!!!!!!!!!!!!!!!!");
 			} else {
 				expansionEntity.setExpansionType(existingExpansionTypeEntity);
 			}
@@ -100,7 +114,7 @@ public class JsonLoader {
 								subRarityOccurences.add(choice.asText());
 							}
 							rarityOccurences.addAll(subRarityOccurences);
-						}else {
+						} else {
 							rarityOccurences.add(occurence.asText());
 						}
 					}
@@ -115,7 +129,8 @@ public class JsonLoader {
 				e.printStackTrace();
 			}
 			try {
-				if (expansion.get("isOnlineOnly").isMissingNode() || expansion.get("isOnlineOnly").asBoolean() == false) {
+				if (expansion.get("isOnlineOnly").isMissingNode()
+						|| expansion.get("isOnlineOnly").asBoolean() == false) {
 					expansionEntity.setExpansionIsonlineonly(0);
 				} else {
 					expansionEntity.setExpansionIsonlineonly(1);
@@ -146,105 +161,220 @@ public class JsonLoader {
 				e.printStackTrace();
 			}
 
-			if (expansionRepo.findOneBy(Expansion.class, "expansion_code", expansionEntity.getExpansionCode()) != null) {
-				System.out.println("Expansion already exists");
+			if (expansionRepo.findOneBy(Expansion.class, "expansion_code",	expansionEntity.getExpansionCode()) == null) {
+				expansionRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, expansionEntity);
 			} else {
-				expansionRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, expansionEntity);				
+//				System.out.println("Expansion" + expansionEntity.getExpansionName() + "already exists");
 			}
-			
-			loadCards(expansion);
-		}
-	}
-	private static void loadCards(JsonNode expansion) throws IOException {
-		JsonNode cards = expansion.get("cards");
-		ArrayList<Card> cardCollection = new ArrayList<Card>();
 
-		while (cards.elements().hasNext()) {
-			JsonNode card = cards.elements().next();
-			Card cardEntity = new Card();
+			JsonNode cards = expansion.get("cards");
+
+			ArrayList<Card> cardCollection = new ArrayList<Card>();
 			
-			Artist existingArtist = artistRepo.findOneBy(Artist.class, "artist_name", card.get("artist").asText());
-			if (existingArtist.equals(null)) {
-				Artist artistEntity = new Artist();
-				artistEntity.setArtistName(card.get("artist").asText());
-				artistRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, artistEntity);
-			} else {
-				cardEntity.setArtist(existingArtist);
-			}
+			Iterator<JsonNode> cardIterator = cards.elements();
 			
-			BorderColor existingBorderColor = borderColorRepo.findOneBy(BorderColor.class, "bordercolor_name", card.get("borderColor").asText());
-			if (existingBorderColor.equals(null)) {
-				BorderColor borderColorEntity = new BorderColor();
-				borderColorEntity.setBordrecolorName(card.get("borderColor").asText());
-				borderColorRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, borderColorEntity);
-			} else {
-				cardEntity.setBorderColor(existingBorderColor);
-			}
-			
-			JsonNode colors = card.get("colors");
-			ArrayList<Color> colorCollection = new ArrayList<Color>();
-			while (colors.elements().hasNext()) {
-				JsonNode color = colors.elements().next();
-				Color existingColorEntity = colorRepo.findOneBy(Color.class, "color_name", color.asText()); 
-				if (existingColorEntity.equals(null)) {
-					Color colorEntity = new Color();
-					colorEntity.setColorCode(color.asText().charAt(0));
-					switch (color.asText().charAt(0)) {
-					case 'R':
-						colorEntity.setColorLabel("Red");
-						break;
-					case 'G':
-						colorEntity.setColorLabel("Green");
-						break;
-					case 'B':
-						colorEntity.setColorLabel("Black");
-						break;
-					case 'W':
-						colorEntity.setColorLabel("White");
-						break;
-					case 'U':
-						colorEntity.setColorLabel("Blue");
-						break;
-					default:
-						break;
-					}
-					colorRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, colorEntity);
-					colorCollection.add(colorEntity);
+			while (cardIterator.hasNext()) {
+				JsonNode card = cardIterator.next();
+				Card cardEntity = new Card();
+				
+				Artist existingArtist = artistRepo.findOneBy(Artist.class, "artist_name", card.get("artist").asText());
+				if (existingArtist == null) {
+					Artist artistEntity = new Artist();
+					artistEntity.setArtistName(card.get("artist").asText());
+					artistRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, artistEntity);
 				} else {
-					colorCollection.add(existingColorEntity);
+					cardEntity.setArtist(existingArtist);
 				}
-			}
-			cardEntity.setColors(colorCollection);
-			
-			cardEntity.setCardConvertedmanacost(card.get("convertedManaCost").asDouble());
-			
-			cardEntity.setCardFaceconvertedmanacost(card.get("faceConvertedManaCost").asDouble());
-			
-			cardEntity.setCardFlavortext(card.get("flavorText").asText());
-			
-			JsonNode foreignDatas = card.get("foreignData");
-			while (foreignDatas.elements().hasNext()) {
-				JsonNode foreignData = foreignDatas.elements().next();
 				
+				BorderColor existingBorderColor = borderColorRepo.findOneBy(BorderColor.class, "bordercolor_name", card.get("borderColor").asText());
+//				System.out.println(existingBorderColor);
+				if (existingBorderColor == null) {
+					BorderColor borderColorEntity = new BorderColor();
+					borderColorEntity.setbordercolorName(card.get("borderColor").asText());
+					borderColorRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, borderColorEntity);
+				} else {
+					cardEntity.setBorderColor(existingBorderColor);
+				}
 				
-				ForeignData existingForeignData = foreignDataRepo.findOneBy(ForeignData.class, "foreigndata_multiverseid", foreignData.get("multiverseid").asText());
-				if (existingForeignData.equals(null)) {
-					ForeignData foreignDataEntity = new ForeignData();
-					foreignDataEntity.setForeigndataFlavortext(foreignData.get("flavorText").asText());
-					foreignDataEntity.setForeigndataMultiverseid(new BigInteger(foreignData.get("multiverseid").asText()));
-					foreignDataEntity.setForeigndataName(foreignData.get("name").asText());
-					foreignDataEntity.setForeigndataText(foreignData.get("text").asText());
-					foreignDataEntity.setForeigndataType(foreignData.get("type").asText());
-					Language existingLanguage = languageRepo.findOneBy(Language.class, "language_name", foreignData.get("language").asText());
-					if (existingLanguage.equals(null)) {
-						Language languageEntity = new Language();
-						languageEntity.setLanguageName(foreignData.get("language").asText());
-						languageRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, languageEntity);
-						foreignDataEntity.setLanguage(languageEntity);
+				JsonNode colors = card.get("colors");
+				ArrayList<Color> colorCollection = new ArrayList<Color>();
+				
+				Iterator<JsonNode> colorIterator = colors.elements();
+				
+				while (colorIterator.hasNext()) {
+					JsonNode color = colorIterator.next();
+					Color existingColorEntity = colorRepo.findOneBy(Color.class, "color_code", color.asText()); 
+					if (existingColorEntity == null) {
+						Color colorEntity = new Color();
+						colorEntity.setColorCode(color.asText().charAt(0));
+						switch (color.asText().charAt(0)) {
+						case 'R':
+							colorEntity.setColorLabel("Red");
+							break;
+						case 'G':
+							colorEntity.setColorLabel("Green");
+							break;
+						case 'B':
+							colorEntity.setColorLabel("Black");
+							break;
+						case 'W':
+							colorEntity.setColorLabel("White");
+							break;
+						case 'U':
+							colorEntity.setColorLabel("Blue");
+							break;
+						default:
+							break;
+						}
+						colorRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, colorEntity);
+						colorCollection.add(colorEntity);
 					} else {
-						foreignDataEntity.setLanguage(existingLanguage);
+						colorCollection.add(existingColorEntity);
 					}
 				}
+				cardEntity.setColors(colorCollection);
+				
+				cardEntity.setCardConvertedmanacost(card.get("convertedManaCost").asDouble());
+				
+				if (card.has("faceConvertedManaCost")) {
+					cardEntity.setCardFaceconvertedmanacost(card.get("faceConvertedManaCost").asDouble());
+				} else {
+					cardEntity.setCardFaceconvertedmanacost(card.get("convertedManaCost").asDouble());
+				}
+				if (card.has("flavorText")) {
+					cardEntity.setCardFlavortext(card.get("flavorText").asText());
+				}
+				JsonNode foreignDatas = card.get("foreignData");
+				
+				Iterator<JsonNode> foreignDataIterator = foreignDatas.elements();
+				ArrayList<ForeignData> foreignDataCollection = new ArrayList<ForeignData>();
+				while (foreignDataIterator.hasNext()) {
+					JsonNode foreignData = foreignDataIterator.next();
+					
+					if (card.has("foreignData") || card.get("foreignData") != null) {
+//						System.out.println(new BigInteger(foreignData.get("multiverseId").asText()));
+						ForeignData existingForeignData;
+						if (foreignData.has("multiverseId")) {
+							existingForeignData = foreignDataRepo.findOneBy(ForeignData.class, "foreigndata_multiverseid", new BigInteger(foreignData.get("multiverseId").asText()));							
+						} else {
+							multiverseIdTemp = multiverseIdTemp.add(new BigInteger("1"));
+							//System.out.println(multiverseIdTemp);
+							existingForeignData = foreignDataRepo.findOneBy(ForeignData.class, "foreigndata_multiverseid", multiverseIdTemp);							
+						}
+						if (existingForeignData == null) {
+							ForeignData foreignDataEntity = new ForeignData();
+							if (foreignData.has("flavorText")) {
+								foreignDataEntity.setForeigndataFlavortext(foreignData.get("flavorText").asText());
+							}
+							if (foreignData.has("multiverseId")) {
+								foreignDataEntity.setForeigndataMultiverseid(
+										new BigInteger(foreignData.get("multiverseId").asText()));
+							} else {
+								foreignDataEntity.setForeigndataMultiverseid(multiverseIdTemp);
+							}
+							if (foreignData.has("name")) {
+								foreignDataEntity.setForeigndataName(foreignData.get("name").asText());
+							}
+							if (foreignData.has("text")) {
+								foreignDataEntity.setForeigndataText(foreignData.get("text").asText());
+							}
+							
+							if (foreignData.has("type")) {
+								foreignDataEntity.setForeigndataType(foreignData.get("type").asText());
+							} else {
+								//System.out.println(foreignData);
+							}
+							if (foreignData.has("language")) {
+								Language existingLanguage = languageRepo.findOneBy(Language.class, "language_name",
+										foreignData.get("language").asText());
+								if (existingLanguage == null) {
+									Language languageEntity = new Language();
+									languageEntity.setLanguageName(foreignData.get("language").asText());
+									languageRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, languageEntity);
+									foreignDataEntity.setLanguage(languageEntity);
+								} else {
+									foreignDataEntity.setLanguage(existingLanguage);
+								} 
+							}
+							foreignDataCollection.add(foreignDataEntity);
+						}
+						cardEntity.setForeignDataCollection(foreignDataCollection);
+					}
+				}
+				
+				FrameVersion existsingFrameVersion = frameVersionRepo.findOneBy(FrameVersion.class, "frameversion_name", card.get("frameVersion").asText());
+				if (existsingFrameVersion == null) {
+					FrameVersion frameVersionEntity = new FrameVersion();
+					frameVersionEntity.setFrameversionName(card.get("frameVersion").asText());
+					frameVersionRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, frameVersionEntity);
+					cardEntity.setFrameVersion(frameVersionEntity);
+				} else {
+					cardEntity.setFrameVersion(existsingFrameVersion);
+				}
+				
+				if (card.has("hasFoil") && card.get("hasFoil").asBoolean()) {
+					cardEntity.setCardHasfoil(1);
+				} else {
+					cardEntity.setCardHasfoil(0);
+				}
+				
+				if (card.has("hasNonFoil") && card.get("hasNonFoil").asBoolean()) {
+					cardEntity.setCardHasnonfoil(1);
+				} else {
+					cardEntity.setCardHasnonfoil(0);
+				}
+				
+				if (card.has("isFoilOnly") && card.get("isFoilOnly").asBoolean()) {
+					cardEntity.setCardIsfoilonly(1);
+				} else {
+					cardEntity.setCardIsfoilonly(0);
+				}
+				
+				if (card.has("isOnlineOnly") && card.get("isOnlineOnly").asBoolean()) {
+					cardEntity.setCardIsonlineonly(1);
+				} else {
+					cardEntity.setCardIsonlineonly(0);
+				}
+				
+				if (card.has("isOversized") && card.get("isOversized").asBoolean()) {
+					cardEntity.setCardIsoversized(1);
+				} else {
+					cardEntity.setCardIsoversized(0);
+				}
+				
+				if (card.has("isReserved") && card.get("isReserved").asBoolean()) {
+					cardEntity.setCardIsreserved(1);
+				} else {
+					cardEntity.setCardIsreserved(0);
+				}
+				
+				if (card.has("isTimeshifted") && card.get("isTimeshifted").asBoolean()) {
+					cardEntity.setCardIstimeshifted(0);
+				} else {
+					cardEntity.setCardIstimeshifted(1);
+				}
+
+				Layout existingLayout = layoutRepo.findOneBy(Layout.class, "layout_name", card.get("layout").asText());
+				if (existingLayout == null) {
+					Layout layoutEntity = new Layout();
+					layoutEntity.setLayoutName(card.get("layout").asText());
+					layoutRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, layoutEntity);
+					cardEntity.setLayout(layoutEntity);
+				} else {
+					cardEntity.setLayout(existingLayout);
+				}
+				
+				JsonNode legalities = card.get("legalities");
+				Iterator<JsonNode> legalityIterator = legalities.elements();
+				
+				while (legalityIterator.hasNext()) {
+					JsonNode legality = legalityIterator.next();
+					System.out.println(legality);
+					Legality existingLegality = legalityRepo.findOneBy(Legality.class, "legality_name", legality.get(0));
+					
+				}
+				
+				
 			}
 		}
 	}

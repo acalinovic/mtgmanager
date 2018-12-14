@@ -84,7 +84,7 @@ public class Token implements Serializable {
     @JoinColumn(name = "token_artist", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.EAGER)
     private Artist artist;
-    @JoinColumn(name = "token__bordercolor", referencedColumnName = "id")
+    @JoinColumn(name = "token_bordercolor", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.EAGER)
     private BorderColor borderColor;
     @JoinColumn(name = "token_expansion", referencedColumnName = "id")

@@ -21,6 +21,6 @@ import java.util.List;
     public Boolean delete(T entity);
     public T findById(Class entityClass, int id);
     public List<T> findBy(Class entityClass, String field, String value);
-    public T findOneBy(Class entityClass, String field, String value);
+    public T findOneBy(Class entityClass, String field, Object value);
     public List<T> findAll(Class entityClass);
 }

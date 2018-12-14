@@ -3,6 +3,8 @@ package be.bbs.mtgmanager;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import be.bbs.bbsfx.repository.GenericRepositoryInterface;
 import be.bbs.bbsfx.utils.AppHelper;
 import be.bbs.bbsfx.utils.DatabaseHelper;
@@ -36,6 +38,7 @@ public class MtgManager extends Application {
        AppHelper.STAGE_MANAGER.renderDefaultView(stage);
        AppHelper.STAGE_MANAGER.buildStage("CardList", false);
        AppHelper.STAGE_MANAGER.renderView("CardList", "CardList", true);
+       
        JsonLoader.load();
        
 

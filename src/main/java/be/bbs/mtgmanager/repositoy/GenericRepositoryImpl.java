@@ -66,7 +66,7 @@ public class GenericRepositoryImpl<T> implements GenericRepositoryInterface<T> {
 				tx.rollback();
 				break;
 			}
-			log(Level.INFO, operation + " Successfuly proccessed", session);
+			//log(Level.INFO, operation + " Successfuly proccessed", session);
 			return entity;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -134,7 +134,7 @@ public class GenericRepositoryImpl<T> implements GenericRepositoryInterface<T> {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public T findOneBy(Class entityClass, String field, String value) {
+	public T findOneBy(Class entityClass, String field, Object value) {
 		try {
 			Session session = DatabaseHelper.getSession();
 			String query = "From " + entityClass.getSimpleName() + " WHERE " + field + " =:value" ;
@@ -146,7 +146,7 @@ public class GenericRepositoryImpl<T> implements GenericRepositoryInterface<T> {
 			return (T) result;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
+			//System.out.println(e.getMessage());
 			return null;
 		}
 	}
