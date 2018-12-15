@@ -84,19 +84,19 @@ public class Card implements Serializable {
     @Column(name = "card_flavortext")
     private String cardFlavortext;
     @Column(name = "card_hasfoil")
-    private int cardHasfoil;
+    private boolean cardHasfoil;
     @Column(name = "card_hasnonfoil")
-    private int cardHasnonfoil;
+    private boolean cardHasnonfoil;
     @Column(name = "card_isfoilonly")
-    private int cardIsfoilonly;
+    private boolean cardIsfoilonly;
     @Column(name = "card_isonlineonly")
-    private int cardIsonlineonly;
+    private boolean cardIsonlineonly;
     @Column(name = "card_isoversized")
-    private int cardIsoversized;
+    private boolean cardIsoversized;
     @Column(name = "card_isreserved")
-    private int cardIsreserved;
+    private boolean cardIsreserved;
     @Column(name = "card_istimeshifted")
-    private int cardIstimeshifted;
+    private boolean cardIstimeshifted;
     @Column(name = "card_loyalty")
     private BigInteger cardLoyalty;
     @Column(name = "card_manacost")
@@ -270,59 +270,59 @@ public class Card implements Serializable {
         this.cardFlavortext = cardFlavortext;
     }
 
-    public int getCardHasfoil() {
+    public boolean getCardHasfoil() {
         return cardHasfoil;
     }
 
-    public void setCardHasfoil(int cardHasfoil) {
+    public void setCardHasfoil(boolean cardHasfoil) {
         this.cardHasfoil = cardHasfoil;
     }
 
-    public int getCardHasnonfoil() {
+    public boolean getCardHasnonfoil() {
         return cardHasnonfoil;
     }
 
-    public void setCardHasnonfoil(int cardHasnonfoil) {
+    public void setCardHasnonfoil(boolean cardHasnonfoil) {
         this.cardHasnonfoil = cardHasnonfoil;
     }
 
-    public int getCardIsfoilonly() {
+    public boolean getCardIsfoilonly() {
         return cardIsfoilonly;
     }
 
-    public void setCardIsfoilonly(int cardIsfoilonly) {
+    public void setCardIsfoilonly(boolean cardIsfoilonly) {
         this.cardIsfoilonly = cardIsfoilonly;
     }
 
-    public int getCardIsonlineonly() {
+    public boolean getCardIsonlineonly() {
         return cardIsonlineonly;
     }
 
-    public void setCardIsonlineonly(int cardIsonlineonly) {
+    public void setCardIsonlineonly(boolean cardIsonlineonly) {
         this.cardIsonlineonly = cardIsonlineonly;
     }
 
-    public int getCardIsoversized() {
+    public boolean getCardIsoversized() {
         return cardIsoversized;
     }
 
-    public void setCardIsoversized(int cardIsoversized) {
+    public void setCardIsoversized(boolean cardIsoversized) {
         this.cardIsoversized = cardIsoversized;
     }
 
-    public int getCardIsreserved() {
+    public boolean getCardIsreserved() {
         return cardIsreserved;
     }
 
-    public void setCardIsreserved(int cardIsreserved) {
+    public void setCardIsreserved(boolean cardIsreserved) {
         this.cardIsreserved = cardIsreserved;
     }
 
-    public int getCardIstimeshifted() {
+    public boolean getCardIstimeshifted() {
         return cardIstimeshifted;
     }
 
-    public void setCardIstimeshifted(int cardIstimeshifted) {
+    public void setCardIstimeshifted(boolean cardIstimeshifted) {
         this.cardIstimeshifted = cardIstimeshifted;
     }
 

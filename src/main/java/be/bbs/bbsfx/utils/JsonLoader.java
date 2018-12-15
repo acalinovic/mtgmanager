@@ -19,7 +19,7 @@ import be.bbs.mtgmanager.model.entity.*;
 import be.bbs.mtgmanager.repositoy.GenericRepositoryImpl;
 
 public class JsonLoader {
-	
+
 	private static BigInteger multiverseIdTemp;
 
 	private static GenericRepositoryImpl<Artist> artistRepo;
@@ -49,9 +49,9 @@ public class JsonLoader {
 	}
 
 	public static void load() throws IOException {
-		
+
 		multiverseIdTemp = new BigInteger("90000000");
-		
+
 		artistRepo = new GenericRepositoryImpl<Artist>();
 		borderColorRepo = new GenericRepositoryImpl<BorderColor>();
 		colorRepo = new GenericRepositoryImpl<Color>();
@@ -68,14 +68,19 @@ public class JsonLoader {
 		tokenRepo = new GenericRepositoryImpl<Token>();
 		typeRepo = new GenericRepositoryImpl<Type>();
 
-		jsonFile = new File("C:\\Users\\boris\\Desktop\\AllSets.json");
+		jsonFile = new File("/home/boris/Bureau/AllSets.json");
 		jsonData = Files.readAllBytes(jsonFile.toPath());
 
 		mapper = new ObjectMapper();
 		expansions = mapper.readTree(jsonData);
-		
-		Iterator<JsonNode> expansionIterator = expansions.elements();
 
+		loadExpansions(expansions);
+
+	}
+
+	private static void loadExpansions(JsonNode expansions) {
+
+		Iterator<JsonNode> expansionIterator = expansions.elements();
 
 		while (expansionIterator.hasNext()) {
 			JsonNode expansion = expansionIterator.next();
@@ -129,11 +134,10 @@ public class JsonLoader {
 				e.printStackTrace();
 			}
 			try {
-				if (expansion.get("isOnlineOnly").isMissingNode()
-						|| expansion.get("isOnlineOnly").asBoolean() == false) {
-					expansionEntity.setExpansionIsonlineonly(0);
+				if (expansion.has("isOnlineOnly") && expansion.get("isOnlineOnly").asBoolean() == true) {
+					expansionEntity.setExpansionIsonlineonly(true);
 				} else {
-					expansionEntity.setExpansionIsonlineonly(1);
+					expansionEntity.setExpansionIsonlineonly(false);
 				}
 			} catch (Exception e) {
 			}
@@ -145,146 +149,150 @@ public class JsonLoader {
 			try {
 				expansionEntity.setExpansionName(expansion.get("name").asText());
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			try {
 				expansionEntity.setExpansionReleasedate(expansion.get("releaseDate").asText());
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			try {
 				expansionEntity.setExpansionTotalsetsize(expansion.get("totalSetSize").bigIntegerValue());
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-			if (expansionRepo.findOneBy(Expansion.class, "expansion_code",	expansionEntity.getExpansionCode()) == null) {
+			if (expansionRepo.findOneBy(Expansion.class, "expansion_code",
+					expansionEntity.getExpansionCode()) == null) {
 				expansionRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, expansionEntity);
 			} else {
-//				System.out.println("Expansion" + expansionEntity.getExpansionName() + "already exists");
+				System.out.println("Expansion" + expansionEntity.getExpansionName() + "already exists");
+			}
+			
+			JsonNode cards = expansion.get("cards");
+			loadCards(cards);
+		}
+	}
+
+	private static void loadCards(JsonNode cards) {
+
+
+		ArrayList<Card> cardCollection = new ArrayList<Card>();
+
+		Iterator<JsonNode> cardIterator = cards.elements();
+
+		while (cardIterator.hasNext()) {
+			JsonNode card = cardIterator.next();
+			Card cardEntity = new Card();
+
+			Artist existingArtist = artistRepo.findOneBy(Artist.class, "artist_name", card.get("artist").asText());
+			if (existingArtist == null) {
+				Artist artistEntity = new Artist();
+				artistEntity.setArtistName(card.get("artist").asText());
+				artistRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, artistEntity);
+			} else {
+				cardEntity.setArtist(existingArtist);
 			}
 
-			JsonNode cards = expansion.get("cards");
+			BorderColor existingBorderColor = borderColorRepo.findOneBy(BorderColor.class, "bordercolor_name",
+					card.get("borderColor").asText()); //
+			System.out.println(existingBorderColor);
+			if (existingBorderColor == null) {
+				BorderColor borderColorEntity = new BorderColor();
+				borderColorEntity.setbordercolorName(card.get("borderColor").asText());
+				borderColorRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, borderColorEntity);
+			} else {
+				cardEntity.setBorderColor(existingBorderColor);
+			}
 
-			ArrayList<Card> cardCollection = new ArrayList<Card>();
-			
-			Iterator<JsonNode> cardIterator = cards.elements();
-			
-			while (cardIterator.hasNext()) {
-				JsonNode card = cardIterator.next();
-				Card cardEntity = new Card();
-				
-				Artist existingArtist = artistRepo.findOneBy(Artist.class, "artist_name", card.get("artist").asText());
-				if (existingArtist == null) {
-					Artist artistEntity = new Artist();
-					artistEntity.setArtistName(card.get("artist").asText());
-					artistRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, artistEntity);
-				} else {
-					cardEntity.setArtist(existingArtist);
-				}
-				
-				BorderColor existingBorderColor = borderColorRepo.findOneBy(BorderColor.class, "bordercolor_name", card.get("borderColor").asText());
-//				System.out.println(existingBorderColor);
-				if (existingBorderColor == null) {
-					BorderColor borderColorEntity = new BorderColor();
-					borderColorEntity.setbordercolorName(card.get("borderColor").asText());
-					borderColorRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, borderColorEntity);
-				} else {
-					cardEntity.setBorderColor(existingBorderColor);
-				}
-				
-				JsonNode colors = card.get("colors");
-				ArrayList<Color> colorCollection = new ArrayList<Color>();
-				
-				Iterator<JsonNode> colorIterator = colors.elements();
-				
-				while (colorIterator.hasNext()) {
-					JsonNode color = colorIterator.next();
-					Color existingColorEntity = colorRepo.findOneBy(Color.class, "color_code", color.asText()); 
-					if (existingColorEntity == null) {
-						Color colorEntity = new Color();
-						colorEntity.setColorCode(color.asText().charAt(0));
-						switch (color.asText().charAt(0)) {
-						case 'R':
-							colorEntity.setColorLabel("Red");
-							break;
-						case 'G':
-							colorEntity.setColorLabel("Green");
-							break;
-						case 'B':
-							colorEntity.setColorLabel("Black");
-							break;
-						case 'W':
-							colorEntity.setColorLabel("White");
-							break;
-						case 'U':
-							colorEntity.setColorLabel("Blue");
-							break;
-						default:
-							break;
-						}
-						colorRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, colorEntity);
-						colorCollection.add(colorEntity);
-					} else {
-						colorCollection.add(existingColorEntity);
+			JsonNode colors = card.get("colors");
+			ArrayList<Color> colorCollection = new ArrayList<Color>();
+
+			Iterator<JsonNode> colorIterator = colors.elements();
+
+			while (colorIterator.hasNext()) {
+				JsonNode color = colorIterator.next();
+				Color existingColorEntity = colorRepo.findOneBy(Color.class, "color_code", color.asText());
+				if (existingColorEntity == null) {
+					Color colorEntity = new Color();
+					colorEntity.setColorCode(color.asText().charAt(0));
+					switch (color.asText().charAt(0)) {
+					case 'R':
+						colorEntity.setColorLabel("Red");
+						break;
+					case 'G':
+						colorEntity.setColorLabel("Green");
+						break;
+					case 'B':
+						colorEntity.setColorLabel("Black");
+						break;
+					case 'W':
+						colorEntity.setColorLabel("White");
+						break;
+					case 'U':
+						colorEntity.setColorLabel("Blue");
+						break;
+					default:
+						break;
 					}
-				}
-				cardEntity.setColors(colorCollection);
-				
-				cardEntity.setCardConvertedmanacost(card.get("convertedManaCost").asDouble());
-				
-				if (card.has("faceConvertedManaCost")) {
-					cardEntity.setCardFaceconvertedmanacost(card.get("faceConvertedManaCost").asDouble());
+					colorRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, colorEntity);
+					colorCollection.add(colorEntity);
 				} else {
-					cardEntity.setCardFaceconvertedmanacost(card.get("convertedManaCost").asDouble());
+					colorCollection.add(existingColorEntity);
 				}
-				if (card.has("flavorText")) {
-					cardEntity.setCardFlavortext(card.get("flavorText").asText());
-				}
-				JsonNode foreignDatas = card.get("foreignData");
-				
-				Iterator<JsonNode> foreignDataIterator = foreignDatas.elements();
-				ArrayList<ForeignData> foreignDataCollection = new ArrayList<ForeignData>();
-				while (foreignDataIterator.hasNext()) {
-					JsonNode foreignData = foreignDataIterator.next();
-					
-					if (card.has("foreignData") || card.get("foreignData") != null) {
-//						System.out.println(new BigInteger(foreignData.get("multiverseId").asText()));
-						ForeignData existingForeignData;
-						if (foreignData.has("multiverseId")) {
-							existingForeignData = foreignDataRepo.findOneBy(ForeignData.class, "foreigndata_multiverseid", new BigInteger(foreignData.get("multiverseId").asText()));							
-						} else {
-							multiverseIdTemp = multiverseIdTemp.add(new BigInteger("1"));
-							//System.out.println(multiverseIdTemp);
-							existingForeignData = foreignDataRepo.findOneBy(ForeignData.class, "foreigndata_multiverseid", multiverseIdTemp);							
+			}
+			cardEntity.setColors(colorCollection);
+
+			cardEntity.setCardConvertedmanacost(card.get("convertedManaCost").asDouble());
+
+			if (card.has("faceConvertedManaCost")) {
+				cardEntity.setCardFaceconvertedmanacost(card.get("faceConvertedManaCost").asDouble());
+			} else {
+				cardEntity.setCardFaceconvertedmanacost(card.get("convertedManaCost").asDouble());
+			}
+			if (card.has("flavorText")) {
+				cardEntity.setCardFlavortext(card.get("flavorText").asText());
+			}
+			JsonNode foreignDatas = card.get("foreignData");
+
+			Iterator<JsonNode> foreignDataIterator = foreignDatas.elements();
+			ArrayList<ForeignData> foreignDataCollection = new ArrayList<ForeignData>();
+			while (foreignDataIterator.hasNext()) {
+				JsonNode foreignData = foreignDataIterator.next();
+
+				if (card.has("foreignData") || card.get("foreignData") != null) { //
+					System.out.println(new BigInteger(foreignData.get("multiverseId").asText()));
+					ForeignData existingForeignData = null;
+					if (foreignData.has("multiverseId")) {
+						existingForeignData = foreignDataRepo.findOneBy(ForeignData.class, "foreigndata_multiverseid",
+								new BigInteger(foreignData.get("multiverseId").asText()));
+					} else {
+						multiverseIdTemp = multiverseIdTemp.add(new BigInteger("1"));
+						// System.out.println(multiverseIdTemp); existingForeignData =
+						foreignDataRepo.findOneBy(ForeignData.class, "foreigndata_multiverseid", multiverseIdTemp);
+					}
+					if (existingForeignData == null) {
+						ForeignData foreignDataEntity = new ForeignData();
+						if (foreignData.has("flavorText")) {
+							foreignDataEntity.setForeigndataFlavortext(foreignData.get("flavorText").asText());
 						}
-						if (existingForeignData == null) {
-							ForeignData foreignDataEntity = new ForeignData();
-							if (foreignData.has("flavorText")) {
-								foreignDataEntity.setForeigndataFlavortext(foreignData.get("flavorText").asText());
-							}
-							if (foreignData.has("multiverseId")) {
-								foreignDataEntity.setForeigndataMultiverseid(
-										new BigInteger(foreignData.get("multiverseId").asText()));
-							} else {
-								foreignDataEntity.setForeigndataMultiverseid(multiverseIdTemp);
-							}
-							if (foreignData.has("name")) {
-								foreignDataEntity.setForeigndataName(foreignData.get("name").asText());
-							}
-							if (foreignData.has("text")) {
-								foreignDataEntity.setForeigndataText(foreignData.get("text").asText());
-							}
-							
-							if (foreignData.has("type")) {
-								foreignDataEntity.setForeigndataType(foreignData.get("type").asText());
-							} else {
-								//System.out.println(foreignData);
-							}
-							if (foreignData.has("language")) {
+						if (foreignData.has("multiverseId")) {
+							foreignDataEntity.setForeigndataMultiverseid(
+									new BigInteger(foreignData.get("multiverseId").asText()));
+						} else {
+							foreignDataEntity.setForeigndataMultiverseid(multiverseIdTemp);
+						}
+						if (foreignData.has("name")) {
+							foreignDataEntity.setForeigndataName(foreignData.get("name").asText());
+						}
+						if (foreignData.has("text")) {
+							foreignDataEntity.setForeigndataText(foreignData.get("text").asText());
+						}
+
+						if (foreignData.has("type")) {
+							foreignDataEntity.setForeigndataType(foreignData.get("type").asText());
+						} else { // System.out.println(foreignData); } if (foreignData.has("language"))
+							{
 								Language existingLanguage = languageRepo.findOneBy(Language.class, "language_name",
 										foreignData.get("language").asText());
 								if (existingLanguage == null) {
@@ -294,15 +302,16 @@ public class JsonLoader {
 									foreignDataEntity.setLanguage(languageEntity);
 								} else {
 									foreignDataEntity.setLanguage(existingLanguage);
-								} 
+								}
 							}
 							foreignDataCollection.add(foreignDataEntity);
 						}
 						cardEntity.setForeignDataCollection(foreignDataCollection);
 					}
 				}
-				
-				FrameVersion existsingFrameVersion = frameVersionRepo.findOneBy(FrameVersion.class, "frameversion_name", card.get("frameVersion").asText());
+
+				FrameVersion existsingFrameVersion = frameVersionRepo.findOneBy(FrameVersion.class, "frameversion_name",
+						card.get("frameVersion").asText());
 				if (existsingFrameVersion == null) {
 					FrameVersion frameVersionEntity = new FrameVersion();
 					frameVersionEntity.setFrameversionName(card.get("frameVersion").asText());
@@ -311,47 +320,47 @@ public class JsonLoader {
 				} else {
 					cardEntity.setFrameVersion(existsingFrameVersion);
 				}
-				
+
 				if (card.has("hasFoil") && card.get("hasFoil").asBoolean()) {
-					cardEntity.setCardHasfoil(1);
+					cardEntity.setCardHasfoil(true);
 				} else {
-					cardEntity.setCardHasfoil(0);
+					cardEntity.setCardHasfoil(false);
 				}
-				
+
 				if (card.has("hasNonFoil") && card.get("hasNonFoil").asBoolean()) {
-					cardEntity.setCardHasnonfoil(1);
+					cardEntity.setCardHasnonfoil(true);
 				} else {
-					cardEntity.setCardHasnonfoil(0);
+					cardEntity.setCardHasnonfoil(false);
 				}
-				
+
 				if (card.has("isFoilOnly") && card.get("isFoilOnly").asBoolean()) {
-					cardEntity.setCardIsfoilonly(1);
+					cardEntity.setCardIsfoilonly(true);
 				} else {
-					cardEntity.setCardIsfoilonly(0);
+					cardEntity.setCardIsfoilonly(false);
 				}
-				
+
 				if (card.has("isOnlineOnly") && card.get("isOnlineOnly").asBoolean()) {
-					cardEntity.setCardIsonlineonly(1);
+					cardEntity.setCardIsonlineonly(true);
 				} else {
-					cardEntity.setCardIsonlineonly(0);
+					cardEntity.setCardIsonlineonly(false);
 				}
-				
+
 				if (card.has("isOversized") && card.get("isOversized").asBoolean()) {
-					cardEntity.setCardIsoversized(1);
+					cardEntity.setCardIsoversized(true);
 				} else {
-					cardEntity.setCardIsoversized(0);
+					cardEntity.setCardIsoversized(false);
 				}
-				
+
 				if (card.has("isReserved") && card.get("isReserved").asBoolean()) {
-					cardEntity.setCardIsreserved(1);
+					cardEntity.setCardIsreserved(true);
 				} else {
-					cardEntity.setCardIsreserved(0);
+					cardEntity.setCardIsreserved(false);
 				}
-				
+
 				if (card.has("isTimeshifted") && card.get("isTimeshifted").asBoolean()) {
-					cardEntity.setCardIstimeshifted(0);
+					cardEntity.setCardIstimeshifted(true);
 				} else {
-					cardEntity.setCardIstimeshifted(1);
+					cardEntity.setCardIstimeshifted(false);
 				}
 
 				Layout existingLayout = layoutRepo.findOneBy(Layout.class, "layout_name", card.get("layout").asText());
@@ -363,19 +372,23 @@ public class JsonLoader {
 				} else {
 					cardEntity.setLayout(existingLayout);
 				}
-				
-				JsonNode legalities = card.get("legalities");
-				Iterator<JsonNode> legalityIterator = legalities.elements();
-				
-				while (legalityIterator.hasNext()) {
-					JsonNode legality = legalityIterator.next();
-					System.out.println(legality);
-					Legality existingLegality = legalityRepo.findOneBy(Legality.class, "legality_name", legality.get(0));
-					
+
+				if (card.has("uuid")) {
+					cardEntity.setCardUuid(card.get("uuid").asText());
 				}
-				
-				
+
+				Card existingCard = cardRepo.findOneBy(cardEntity.getClass(), "card_uuid", cardEntity.getCardUuid());
+				if (existingCard == null) {
+					cardRepo.execute(GenericRepositoryInterface.SAVE_OR_UPDATE, cardEntity);
+				} //
 			}
 		}
 	}
 }
+
+//    JsonNode legalities = card.get("legalities");
+//	  Iterator<JsonNode> legalityIterator = legalities.elements(); // // while
+//	  (legalityIterator.hasNext()) { // JsonNode legality =
+//	  legalityIterator.next(); // System.out.println(legality); // Legality
+//	  existingLegality = legalityRepo.findOneBy(Legality.class, "legality_name",
+//	  legality.get(0)); // // }

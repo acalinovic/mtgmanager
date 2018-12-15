@@ -1,4 +1,4 @@
-package be.bbs.mtgmanager.entity.html;
+package be.bbs.mtgmanager.model.html;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Node;

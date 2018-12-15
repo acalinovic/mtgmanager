@@ -67,7 +67,7 @@ public class Expansion implements Serializable {
     @Column(name = "expansion_code")
     private String expansionCode;
     @Column(name = "expansion_isonlineonly")
-    private int expansionIsonlineonly;
+    private boolean expansionIsonlineonly;
     @Column(name = "expansion_meta")
     private String expansionMeta;
     @Column(name = "expansion_mtgocode")
@@ -136,11 +136,11 @@ public class Expansion implements Serializable {
         this.expansionCode = expansionCode;
     }
 
-    public int getExpansionIsonlineonly() {
+    public boolean getExpansionIsonlineonly() {
         return expansionIsonlineonly;
     }
 
-    public void setExpansionIsonlineonly(int expansionIsonlineonly) {
+    public void setExpansionIsonlineonly(boolean expansionIsonlineonly) {
         this.expansionIsonlineonly = expansionIsonlineonly;
     }
 

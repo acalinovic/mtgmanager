@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 Built-By: boris
-Build-Jdk: 1.8.0_191
+Build-Jdk: 10.0.2
 Created-By: Maven Integration for Eclipse
 
